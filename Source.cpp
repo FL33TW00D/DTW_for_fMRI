@@ -45,7 +45,7 @@ int main()
 
 		//output path
 		stringstream os;
-		os << outputPath << "output" << dataset << run << "\\";
+		os << outputPath << "output" << dataset << run << "/";
 		string outPath = os.str();
 
 		//print where do we read in from, and where will we write out the results
@@ -129,6 +129,7 @@ int main()
 	
 
 	//keep the window open
+	cout << "Successfully completed!";
 	int x;
 	cin >> x;
 }

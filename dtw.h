@@ -138,7 +138,7 @@ void calculateWithThreadsWholebrain(string subname, size_t * breakpoints, vector
 	//claculate parallel on the threads
 	for (int i = 0; i < MAXNUMBEROFTHREADS - 1; ++i)
 	{
-		threads[i] = thread(callFromThread_wholebrain, std::ref(breakpoints[i]), std::ref(breakpoints[i + 1]), std::ref(data), size, mode, w, outPath);
+		threads[i] = thread(callFromThread_wholebrain, breakpoints[i], breakpoints[i + 1], std::ref(data), size, mode, w, outPath);
 		
 	}
 
