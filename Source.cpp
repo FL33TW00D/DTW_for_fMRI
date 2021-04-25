@@ -1,9 +1,6 @@
 #include "dtw.h"
 #include "readin.h"
 #include <thread>
-#include <windows.h>
-#include <ppl.h>
-
 
 int main()
 {
@@ -55,7 +52,7 @@ int main()
 		cout << input << "\n" << outPath << "\n";
 
 		//structure for holding our timeseries data
-		vector<vector<INT64> > data;
+		vector<vector<int64_t> > data;
 
 		readIn(input, data);
 
@@ -111,7 +108,7 @@ int main()
 					//normalize data
 					for (int j = 0; j < tSize; j++)
 					{
-						data[i][j] = (INT64)((((double)data[i][j] - means[i]) / vars[i]) * 10000);
+						data[i][j] = (int64_t)((((double)data[i][j] - means[i]) / vars[i]) * 10000);
 					}
 				}
 

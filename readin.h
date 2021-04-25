@@ -43,7 +43,7 @@ void readInNames(string line, string &subname, string& inputPath, int& dataset, 
 
 
 //function readIn parses text file containing the time-series data to vector<vector< INT64 > >: each column contains a time-series 
-void readIn(string input, vector<vector< INT64 > > &data)
+void readIn(string input, vector<vector< int64_t > > &data)
 {
 	ifstream inputStream;
 	inputStream.open(input);
@@ -60,9 +60,9 @@ void readIn(string input, vector<vector< INT64 > > &data)
 	// create datastructure for the time series vectors: we count how many time-series we have from the first line
 	for (vector<string>::iterator it = firstLine.begin(); it != firstLine.end(); it++)
 	{
-		INT64 d = (stod(*it)) * 10000;	//stod creates double from string, we convert to int64: max 4 decimals
+		int64_t d = (stod(*it)) * 10000;	//stod creates double from string, we convert to int64: max 4 decimals
 
-		vector <INT64> intVec;
+		vector <int64_t> intVec;
 		intVec.reserve(300);	//reserve the number of time-points we have
 		intVec.push_back(d);
 
@@ -78,10 +78,10 @@ void readIn(string input, vector<vector< INT64 > > &data)
 		parseCSV(line, sSeries);	//parse string line
 
 		// fill datastructure with the time series data
-		vector<vector< INT64 > >::iterator beg = data.begin();
+		vector<vector< int64_t > >::iterator beg = data.begin();
 		for (vector<string>::iterator it = sSeries.begin(); it != sSeries.end(); it++)
 		{
-			INT64 d = ((stod(*it)) * 10000);	//stod creates double from string, we convert to int64: max 4 decimals
+			int64_t d = ((stod(*it)) * 10000);	//stod creates double from string, we convert to int64: max 4 decimals
 			(*beg).push_back(d);	
 			beg++;
 		}

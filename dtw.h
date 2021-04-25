@@ -9,16 +9,14 @@
 #include <sstream>
 #include <fstream>
 #include <thread>
-#include <windows.h>
-#include <ppl.h>
-
+#include <functional>
 
 #define MAXNUMBEROFTHREADS 8	//should be the number of CPU cores
 
 using namespace std;
 
 // function dist calculates distance between two double variables. string mode specifies the distance metric
-INT64 dist(INT64 a, INT64 b, string mode)
+int64_t dist(int64_t a, int64_t b, string mode)
 {
 	if (mode == "L1")
 		return abs(a - b);
@@ -29,29 +27,29 @@ INT64 dist(INT64 a, INT64 b, string mode)
 	else
 	{
 		cout << "There's no distance metric named " << mode << "implemented. Returning infinity.\n";
-		return INT64_MAX;
+		return numeric_limits<int64_t>::max();
 	}
 
 }
 
 // function dtw calculates dynamic time warping between two double vectors, with distance metric mode, and warping window size w
 //pseudo-code at: https://en.wikipedia.org/wiki/Dynamic_time_warping 
-INT64 dtw(vector<INT64> tSeries1, vector<INT64> tSeries2, string mode, int w)
+int64_t dtw(vector<int64_t> tSeries1, vector<int64_t> tSeries2, string mode, int w)
 {
 	const int size1 = tSeries1.size();
 	const int size2 = tSeries2.size();
 
 	//DTW vector is the serialized DTW matrix (first line and first column stays infinity)
-	INT64* DTW = new INT64[(size1 + 1) * (size2 + 1)];
+	int64_t* DTW = new int64_t[(size1 + 1) * (size2 + 1)];
 
 	w = max(w, abs(size1 - size2));
 
 	//DTW matrix should be initialized with infinity
 	for (int i = 1; i < (size1 + 1) * (size2 + 1); i++)
-		DTW[i] = INT64_MAX;
+		DTW[i] = numeric_limits<int64_t>::max();
 	DTW[0] = 0;
 
-	INT64 warpCost;
+	int64_t warpCost;
 
 	for (int i = 1; i < size1 + 1; i++)
 	{
@@ -63,14 +61,14 @@ INT64 dtw(vector<INT64> tSeries1, vector<INT64> tSeries2, string mode, int w)
 		}
 	}
 
-	INT64 toReturn=DTW[(size1 + 1) * (size2 + 1) - 1]; //return DTW distance: the last value in the matrix
+	int64_t toReturn=DTW[(size1 + 1) * (size2 + 1) - 1]; //return DTW distance: the last value in the matrix
 	delete[] DTW;
 	return toReturn;
 }
 
 
 // function callFromThread_wholebrain is called from each thread
-void callFromThread_wholebrain(int begin, int end, vector<vector<INT64> > &data, int size, string mode, int w, string outPath)
+void callFromThread_wholebrain(int begin, int end, vector<vector<int64_t> > &data, int size, string mode, int w, string outPath)
 {	
 	//open txt for the output values
 	ofstream output;
@@ -81,7 +79,7 @@ void callFromThread_wholebrain(int begin, int end, vector<vector<INT64> > &data,
 	output.open(str);
 
 		//calculate DTW values given to this thread
-		INT64* connectivity = new INT64[size - 1];
+		int64_t* connectivity = new int64_t[size - 1];
 		for (int i = begin; i < end; i++)
 		{
 			for (int j = i + 1; j < size; j++)
@@ -132,7 +130,7 @@ void uniteOutput(size_t* breakpoints, int maxNumberOfThreads, string mode, int w
 
 
 //function calculateWithThreadsWholebrain distributes calculations between threads
-void calculateWithThreadsWholebrain(string subname, size_t * breakpoints, vector<vector<INT64> > &data, int size, string mode, int w, string norm, string outPath)
+void calculateWithThreadsWholebrain(string subname, size_t * breakpoints, vector<vector<int64_t> > &data, int size, string mode, int w, string norm, string outPath)
 {
 	//array of threads to use (size is max-1 because the last thread is the main)
 	thread threads[MAXNUMBEROFTHREADS - 1];
@@ -140,7 +138,7 @@ void calculateWithThreadsWholebrain(string subname, size_t * breakpoints, vector
 	//claculate parallel on the threads
 	for (int i = 0; i < MAXNUMBEROFTHREADS - 1; ++i)
 	{
-		threads[i] = thread(callFromThread_wholebrain, breakpoints[i], breakpoints[i + 1], data, size, mode, w, outPath);
+		threads[i] = thread(callFromThread_wholebrain, std::ref(breakpoints[i]), std::ref(breakpoints[i + 1]), std::ref(data), size, mode, w, outPath);
 		
 	}
 
