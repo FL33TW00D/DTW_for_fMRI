@@ -1,0 +1,2 @@
+fleettest	/home/fleetwood/Saber/MultiModalFusion_DATA/DTW/DTW_for_fMRI/fleettest/testset/test_resting1_data.txt	1	1	
+fleettest	/home/fleetwood/Saber/MultiModalFusion_DATA/DTW/DTW_for_fMRI/fleettest/testset/test_resting2_data.txt	1	2	
